@@ -1,8 +1,38 @@
+let fuente = 'simpsonslatino.online';
+
 function obtenerNumeroRandom(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-let fuente = 'simpsonslatino.online';
+function copyToClipboard(text) {
+  var textarea = document.createElement('textarea');
+  textarea.textContent = text;
+  document.body.appendChild(textarea);
+
+  var selection = document.getSelection();
+  var savedRanges = [];
+  for (let i = 0; i < selection.rangeCount; i++) {
+    savedRanges[i] = selection.getRangeAt(i).cloneRange();
+  }
+  selection.removeAllRanges();
+  textarea.select();
+  document.execCommand('copy');
+
+  selection.removeAllRanges();
+  for (let i = 0; i < savedRanges.length; i++) {
+    selection.addRange(savedRanges[i]);
+  }
+
+  document.body.removeChild(textarea);
+  showToast('Enlace copiado al portapapeles');
+}
+
+function showToast(text) {
+  const toast = document.getElementById('fuenteToast');
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toast);
+  toast.querySelector('.toast-body').textContent = text;
+  toastBootstrap.show();
+}
 
 const getSimpsonsOnlineUrl = (season, episode) =>
   `https://simpsonslatino.online/episodes/los-simpson-${season}x${episode}/`;
@@ -20,7 +50,7 @@ const botonEncontrarHandler = () => {
     card.classList.add('visually-hidden-focusable');
   }
 
-  const season = obtenerNumeroRandom(3, 34);
+  const season = obtenerNumeroRandom(1, 34);
   const episode = obtenerNumeroRandom(1, 25);
   const proxy = 'https://proxy.cors.sh/';
   let link;
@@ -61,8 +91,14 @@ const botonEncontrarHandler = () => {
       document.querySelector('.card-title').textContent = openGraphData['og:title'];
       document.querySelector('.card-text').textContent = openGraphData['og:description'];
       document.getElementById('episodio-link').href = link;
+      document.getElementById('copiar').addEventListener('click', () => {
+        copyToClipboard(link);
+      });
     })
-    .catch((error) => console.error('Error: ' + error));
+    .catch((error) => {
+      console.error('Error: ' + error);
+      return false;
+    });
 
   return true;
 };
@@ -80,5 +116,6 @@ botonEncontrar.addEventListener('click', () => {
 document.querySelectorAll('.source').forEach((item) => {
   item.addEventListener('click', (event) => {
     fuente = event.target.textContent;
+    showToast(`Fuente seleccionada: ${fuente}`);
   });
 });
