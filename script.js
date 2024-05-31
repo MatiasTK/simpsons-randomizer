@@ -10,11 +10,19 @@ const getSimpsonsOnlineUrl = (season, episode) =>
 const getSimpsonizadosUrl = (season, episode) =>
   `https://simpsonizados.me/capitulo/los-simpson-${season}x${episode}/`;
 
-const botonEncontrar = document.getElementById('encontrar');
-botonEncontrar.addEventListener('click', () => {
+const botonEncontrarHandler = () => {
+  const spinner = document.getElementById('spinner');
+  const card = document.getElementById('card');
+  if (spinner.classList.contains('visually-hidden')) {
+    spinner.classList.remove('visually-hidden');
+  }
+  if (!card.classList.contains('visually-hidden-focusable')) {
+    card.classList.add('visually-hidden-focusable');
+  }
+
   const season = obtenerNumeroRandom(3, 34);
   const episode = obtenerNumeroRandom(1, 25);
-  const proxy = 'https://corsproxy.io/?';
+  const proxy = 'https://proxy.cors.sh/';
   let link;
   if (fuente === 'simpsonslatino.online') {
     link = getSimpsonsOnlineUrl(season, episode);
@@ -22,17 +30,16 @@ botonEncontrar.addEventListener('click', () => {
     link = getSimpsonizadosUrl(season, episode);
   }
 
-  // Fetch the HTML of the page
   fetch(proxy + link, {
-    mode: 'cors',
+    headers: {
+      'x-cors-api-key': 'temp_af418191545e115fbeb6bc31c43c5565',
+    },
   })
     .then((response) => response.text())
     .then((html) => {
-      // Parse the HTML with a DOM parser
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
 
-      // Extract the Open Graph meta tags
       const metaTags = Array.from(doc.getElementsByTagName('meta'));
       const openGraphData = metaTags.reduce((data, tag) => {
         if (tag.getAttribute('property') && tag.getAttribute('property').startsWith('og:')) {
@@ -41,16 +48,33 @@ botonEncontrar.addEventListener('click', () => {
         return data;
       }, {});
 
-      const hidden = document.querySelector('.visually-hidden');
-      if (hidden) {
-        hidden.classList.remove('visually-hidden');
+      if (!openGraphData['og:image'] || openGraphData['og:title'].includes('no se encuentra')) {
+        return false;
       }
+
+      if (card) {
+        card.classList.remove('visually-hidden-focusable');
+      }
+
+      spinner.classList.add('visually-hidden');
       document.querySelector('.card-img-top').src = openGraphData['og:image'];
       document.querySelector('.card-title').textContent = openGraphData['og:title'];
       document.querySelector('.card-text').textContent = openGraphData['og:description'];
       document.getElementById('episodio-link').href = link;
     })
-    .catch((error) => console.error('Error:', error));
+    .catch((error) => console.error('Error: ' + error));
+
+  return true;
+};
+
+const botonEncontrar = document.getElementById('encontrar');
+botonEncontrar.addEventListener('click', () => {
+  let status;
+  status = botonEncontrarHandler();
+  while (!status) {
+    status = botonEncontrarHandler();
+    console.log(status);
+  }
 });
 
 document.querySelectorAll('.source').forEach((item) => {
