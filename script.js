@@ -52,65 +52,64 @@ const botonEncontrarHandler = () => {
 
   const season = obtenerNumeroRandom(1, 34);
   const episode = obtenerNumeroRandom(1, 25);
-  const proxy = 'https://proxy.cors.sh/';
+  const proxy = '/.netlify/edge-functions/proxy?url=';
   let link;
   if (fuente === 'simpsonslatino.online') {
     link = getSimpsonsOnlineUrl(season, episode);
   } else if (fuente === 'simpsonizados.me') {
     link = getSimpsonizadosUrl(season, episode);
   }
+  const encodedLink = encodeURIComponent(link);
 
-  fetch(proxy + link, {
-    headers: {
-      'x-cors-api-key': 'temp_af418191545e115fbeb6bc31c43c5565',
-    },
-  })
-    .then((response) => response.text())
-    .then((html) => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
+  return new Promise((resolve) => {
+    fetch(proxy + encodedLink)
+      .then((response) => response.text())
+      .then((html) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
 
-      const metaTags = Array.from(doc.getElementsByTagName('meta'));
-      const openGraphData = metaTags.reduce((data, tag) => {
-        if (tag.getAttribute('property') && tag.getAttribute('property').startsWith('og:')) {
-          data[tag.getAttribute('property')] = tag.getAttribute('content');
+        const metaTags = Array.from(doc.getElementsByTagName('meta'));
+        const openGraphData = metaTags.reduce((data, tag) => {
+          if (tag.getAttribute('property') && tag.getAttribute('property').startsWith('og:')) {
+            data[tag.getAttribute('property')] = tag.getAttribute('content');
+          }
+          return data;
+        }, {});
+
+        if (!openGraphData['og:image'] || openGraphData['og:title'].includes('no se encuentra')) {
+          resolve(false);
         }
-        return data;
-      }, {});
 
-      if (!openGraphData['og:image'] || openGraphData['og:title'].includes('no se encuentra')) {
-        return false;
-      }
+        if (card) {
+          card.classList.remove('visually-hidden-focusable');
+        }
 
-      if (card) {
-        card.classList.remove('visually-hidden-focusable');
-      }
+        spinner.classList.add('visually-hidden');
+        document.querySelector('.card-img-top').src = openGraphData['og:image'];
+        document.querySelector('.card-title').textContent = openGraphData['og:title'];
+        document.querySelector('.card-text').textContent = openGraphData['og:description'];
+        document.getElementById('episodio-link').href = link;
+        document.getElementById('copiar').addEventListener('click', () => {
+          copyToClipboard(link);
+        });
 
-      spinner.classList.add('visually-hidden');
-      document.querySelector('.card-img-top').src = openGraphData['og:image'];
-      document.querySelector('.card-title').textContent = openGraphData['og:title'];
-      document.querySelector('.card-text').textContent = openGraphData['og:description'];
-      document.getElementById('episodio-link').href = link;
-      document.getElementById('copiar').addEventListener('click', () => {
-        copyToClipboard(link);
+        resolve(true);
+      })
+      .catch((error) => {
+        console.error('Error: ' + error);
+        resolve(false);
       });
-    })
-    .catch((error) => {
-      console.error('Error: ' + error);
-      return false;
-    });
-
-  return true;
+  });
 };
 
 const botonEncontrar = document.getElementById('encontrar');
 botonEncontrar.addEventListener('click', () => {
-  let status;
-  status = botonEncontrarHandler();
-  while (!status) {
-    status = botonEncontrarHandler();
-    console.log(status);
-  }
+  botonEncontrarHandler().then((isOk) => {
+    if (!isOk) {
+      document.getElementById('spinner').classList.add('visually-hidden');
+      showToast('No se encontró el episodio, intenta de nuevo');
+    }
+  });
 });
 
 document.querySelectorAll('.source').forEach((item) => {
