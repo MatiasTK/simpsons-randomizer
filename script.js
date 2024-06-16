@@ -1,3 +1,45 @@
+const seasons = {
+  1: 13,
+  2: 22,
+  3: 24,
+  4: 22,
+  5: 22,
+  6: 25,
+  7: 25,
+  8: 25,
+  9: 25,
+  10: 23,
+  11: 22,
+  12: 21,
+  13: 22,
+  14: 22,
+  15: 22,
+  16: 21,
+  17: 22,
+  18: 22,
+  19: 20,
+  20: 21,
+  21: 23,
+  22: 22,
+  23: 22,
+  24: 22,
+  25: 22,
+  26: 22,
+  27: 22,
+  28: 21,
+  29: 21,
+  30: 23,
+  31: 22,
+  32: 22,
+  33: 22,
+  34: 22,
+};
+
+function saveToLocalStorage() {
+  localStorage.setItem('fuente', fuente);
+  localStorage.setItem('temporada', document.getElementById('temporadaInput').value);
+}
+
 let fuente = 'simpsonslatino.online';
 
 function obtenerNumeroRandom(min, max) {
@@ -50,8 +92,9 @@ const botonEncontrarHandler = () => {
     card.classList.add('visually-hidden-focusable');
   }
 
-  const season = obtenerNumeroRandom(1, 34);
-  const episode = obtenerNumeroRandom(1, 25);
+  const seasonMax = document.getElementById('temporadaInput').value;
+  const season = obtenerNumeroRandom(1, seasonMax);
+  const episode = obtenerNumeroRandom(1, seasons[season]);
   const proxy = '/.netlify/edge-functions/proxy?url=';
   let link;
   if (fuente === 'simpsonslatino.online') {
@@ -102,6 +145,18 @@ const botonEncontrarHandler = () => {
   });
 };
 
+document.getElementById('temporadaInput').addEventListener('change', () => {
+  saveToLocalStorage();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  fuente = localStorage.getItem('fuente');
+  const temporadaLocal = localStorage.getItem('temporada');
+  if (temporadaLocal) {
+    document.getElementById('temporadaInput').value = temporadaLocal;
+  }
+});
+
 const botonEncontrar = document.getElementById('encontrar');
 botonEncontrar.addEventListener('click', () => {
   botonEncontrarHandler().then((isOk) => {
@@ -115,6 +170,7 @@ botonEncontrar.addEventListener('click', () => {
 document.querySelectorAll('.source').forEach((item) => {
   item.addEventListener('click', (event) => {
     fuente = event.target.textContent;
+    saveToLocalStorage();
     showToast(`Fuente seleccionada: ${fuente}`);
   });
 });
