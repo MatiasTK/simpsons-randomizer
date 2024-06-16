@@ -150,10 +150,13 @@ document.getElementById('temporadaInput').addEventListener('change', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  fuente = localStorage.getItem('fuente');
+  const fuenteLocal = localStorage.getItem('fuente');
   const temporadaLocal = localStorage.getItem('temporada');
   if (temporadaLocal) {
     document.getElementById('temporadaInput').value = temporadaLocal;
+  }
+  if (fuenteLocal) {
+    fuente = fuenteLocal;
   }
 });
 
