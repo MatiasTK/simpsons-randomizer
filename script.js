@@ -1,4 +1,4 @@
-const seasons = {
+const SEASONS = {
   1: 13,
   2: 22,
   3: 24,
@@ -33,6 +33,17 @@ const seasons = {
   32: 22,
   33: 22,
   34: 22,
+};
+
+const getSimpsonsOnlineUrl = (season, episode) =>
+  `https://simpsonslatino.online/capitulo/los-simpson-${season}x${episode}/`;
+
+const getSimpsonizadosUrl = (season, episode) =>
+  `https://simpsonizados.me/cap/los-simpson-${season}x${episode}/`;
+
+const PROVIDERS = {
+  'simpsonslatino.online': getSimpsonsOnlineUrl,
+  'simpsonizados.me': getSimpsonizadosUrl,
 };
 
 function saveToLocalStorage() {
@@ -76,12 +87,6 @@ function showToast(text) {
   toastBootstrap.show();
 }
 
-const getSimpsonsOnlineUrl = (season, episode) =>
-  `https://simpsonslatino.online/episodes/los-simpson-${season}x${episode}/`;
-
-const getSimpsonizadosUrl = (season, episode) =>
-  `https://simpsonizados.me/capitulo/los-simpson-${season}x${episode}/`;
-
 const botonEncontrarHandler = () => {
   const spinner = document.getElementById('spinner');
   const card = document.getElementById('card');
@@ -94,14 +99,9 @@ const botonEncontrarHandler = () => {
 
   const seasonMax = document.getElementById('temporadaInput').value;
   const season = obtenerNumeroRandom(1, seasonMax);
-  const episode = obtenerNumeroRandom(1, seasons[season]);
+  const episode = obtenerNumeroRandom(1, SEASONS[season]);
   const proxy = '/.netlify/edge-functions/proxy?url=';
-  let link;
-  if (fuente === 'simpsonslatino.online') {
-    link = getSimpsonsOnlineUrl(season, episode);
-  } else if (fuente === 'simpsonizados.me') {
-    link = getSimpsonizadosUrl(season, episode);
-  }
+  const link = PROVIDERS[fuente](season, episode);
   const encodedLink = encodeURIComponent(link);
 
   return new Promise((resolve) => {
