@@ -41,9 +41,17 @@ const getSimpsonsOnlineUrl = (season, episode) =>
 const getSimpsonizadosUrl = (season, episode) =>
   `https://simpsonizados.me/cap/los-simpson-${season}x${episode}/`;
 
+const getSimpsonsHdUrl = (season, episode) =>
+  `https://simpsonhd.com/episodios/los-simpson-${season}x${episode}/`;
+
+const getPelisPlusUrl = (season, episode) =>
+  `https://ww3.pelisplus.to/serie/los-simpson/season/${season}/episode/${episode}`;
+
 const PROVIDERS = {
   'simpsonslatino.online': getSimpsonsOnlineUrl,
   'simpsonizados.me': getSimpsonizadosUrl,
+  'simpsonhd.com': getSimpsonsHdUrl,
+  'pelisplus.to': getPelisPlusUrl,
 };
 
 function saveToLocalStorage() {
