@@ -19,9 +19,9 @@
       }
     </style>
   </head>
-  <body class="bg-dark text-white d-flex flex-column min-vh-100">
+  <body class="bg-dark text-white d-flex flex-column vh-100">
     <h1 class="display-4 text-center pt-4">Simpsons Randomizer</h1>
-    <main class="container-fluid d-flex align-items-center justify-content-center flex-grow-1">
+    <main class="container-fluid d-flex align-items-center justify-content-center h-100">
       <div id="episodioEncontrado" class="d-flex justify-content-center">
         <div
           class="spinner-border visually-hidden"
@@ -37,12 +37,14 @@
           id="card"
           data-bs-theme="dark"
         >
-          <img class="card-img-top" alt="Imagen capitulo" />
+          <img class="card-img-top" alt="Imagen capitulo" style="max-height: 250px;" />
           <div class="card-body">
             <h5 class="card-title"></h5>
-            <p class="card-text"></p>
-            <a class="btn btn-primary" id="episodio-link">Ver episodio</a>
-            <button class="btn btn-secondary" id="copiar">Copiar Link</button>
+            <p class="card-text overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 5; line-clamp: 5; -webkit-box-orient: vertical; text-overflow: ellipsis;"></p>
+            <div class="d-flex align-items-center gap-2">
+              <a class="btn btn-primary w-100 fw-semibold" rel="noopener" target="_blank"  id="episodio-link">Ver episodio</a>
+              <button class="btn btn-secondary text-nowrap" id="copiar">Copiar Link</button>
+            </div>
           </div>
         </div>
       </div>
@@ -82,7 +84,7 @@
                 </ul>
               </div>
             </div>
-            <button type="button" class="btn btn-primary" id="encontrar">
+            <button type="button" class="btn btn-primary fw-semibold" id="encontrar">
               Encuentra un episodio
             </button>
           </div>
