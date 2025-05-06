@@ -12,3 +12,11 @@ Puedes usar la web [aquí](https://simpsonsrandomizer.netlify.app)
 ## Previsualización
 
 ![Previsualización](https://i.imgur.com/wdTarOB.png)
+
+## Desarrollo
+
+Para ejecutar el proyecto en modo desarrollo:
+
+```shell
+netlify dev
+```
