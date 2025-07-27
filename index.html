@@ -17,10 +17,14 @@
         background-color: #343a40;
         border-color: #343a40;
       }
+      .form-check-input {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+      }
     </style>
   </head>
   <body class="bg-dark text-white d-flex flex-column vh-100">
-    <h1 class="display-4 text-center pt-4">Simpsons Randomizer</h1>
+    <h1 class="display-4 text-center pt-3">Simpsons Randomizer</h1>
     <main class="container-fluid d-flex align-items-center justify-content-center h-100">
       <div id="episodioEncontrado" class="d-flex justify-content-center">
         <div
@@ -37,12 +41,27 @@
           id="card"
           data-bs-theme="dark"
         >
-          <img class="card-img-top" alt="Imagen capitulo" style="max-height: 250px;" />
+          <img class="card-img-top" alt="Imagen capitulo" style="max-height: 250px" />
           <div class="card-body">
             <h5 class="card-title"></h5>
-            <p class="card-text overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 5; line-clamp: 5; -webkit-box-orient: vertical; text-overflow: ellipsis;"></p>
+            <p
+              class="card-text overflow-hidden"
+              style="
+                display: -webkit-box;
+                -webkit-line-clamp: 5;
+                line-clamp: 5;
+                -webkit-box-orient: vertical;
+                text-overflow: ellipsis;
+              "
+            ></p>
             <div class="d-flex align-items-center gap-2">
-              <a class="btn btn-primary w-100 fw-semibold" rel="noopener" target="_blank"  id="episodio-link">Ver episodio</a>
+              <a
+                class="btn btn-primary w-100 fw-semibold"
+                rel="noopener"
+                target="_blank"
+                id="episodio-link"
+                >Ver episodio</a
+              >
               <button class="btn btn-secondary text-nowrap" id="copiar">Copiar Link</button>
             </div>
           </div>
@@ -87,6 +106,10 @@
             <button type="button" class="btn btn-primary fw-semibold" id="encontrar">
               Encuentra un episodio
             </button>
+            <div class="d-flex align-items-center gap-2 mx-auto form-check">
+              <input class="form-check-input my-auto" type="checkbox" id="nueva-pestana" />
+              <label class="form-check-label" for="nueva-pestana">Abrir en nueva pestaña</label>
+            </div>
           </div>
         </div>
       </div>

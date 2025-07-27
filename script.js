@@ -57,6 +57,7 @@ const PROVIDERS = {
 function saveToLocalStorage() {
   localStorage.setItem('fuente', fuente);
   localStorage.setItem('temporada', document.getElementById('temporadaInput').value);
+  localStorage.setItem('nueva-pestana', document.getElementById('nueva-pestana').checked);
 }
 
 let fuente = 'simpsonslatino.online';
@@ -160,11 +161,17 @@ document.getElementById('temporadaInput').addEventListener('change', () => {
 document.addEventListener('DOMContentLoaded', () => {
   const fuenteLocal = localStorage.getItem('fuente');
   const temporadaLocal = localStorage.getItem('temporada');
+  const nuevaPestanaLocal = localStorage.getItem('nueva-pestana');
   if (temporadaLocal) {
     document.getElementById('temporadaInput').value = temporadaLocal;
   }
   if (fuenteLocal) {
     fuente = fuenteLocal;
+  }
+  if (nuevaPestanaLocal) {
+    document.getElementById('nueva-pestana').checked = nuevaPestanaLocal === 'true';
+    document.getElementById('episodio-link').target =
+      nuevaPestanaLocal === 'true' ? '_blank' : '_self';
   }
 });
 
@@ -176,6 +183,11 @@ botonEncontrar.addEventListener('click', () => {
       showToast('No se encontró el episodio, intenta de nuevo');
     }
   });
+});
+
+document.getElementById('nueva-pestana').addEventListener('change', (e) => {
+  saveToLocalStorage();
+  document.getElementById('episodio-link').target = e.target.checked ? '_blank' : '_self';
 });
 
 document.querySelectorAll('.source').forEach((item) => {
