@@ -1,4 +1,8 @@
-import { DEFAULT_SETTINGS, PROVIDERS, STORAGE_KEYS } from '../constants/index.js';
+import {
+  DEFAULT_SETTINGS,
+  PROVIDERS,
+  STORAGE_KEYS,
+} from '../constants/index.js';
 import { UIUtils } from '../utils/index.js';
 
 /**
@@ -19,7 +23,9 @@ export class AppState {
     try {
       const fuenteLocal = localStorage.getItem(STORAGE_KEYS.FUENTE);
       const temporadaLocal = localStorage.getItem(STORAGE_KEYS.TEMPORADA);
-      const nuevaPestanaLocal = localStorage.getItem(STORAGE_KEYS.NUEVA_PESTANA);
+      const nuevaPestanaLocal = localStorage.getItem(
+        STORAGE_KEYS.NUEVA_PESTANA
+      );
 
       if (fuenteLocal && PROVIDERS[fuenteLocal]) {
         this.fuente = fuenteLocal;
@@ -45,7 +51,10 @@ export class AppState {
     try {
       localStorage.setItem(STORAGE_KEYS.FUENTE, this.fuente);
       localStorage.setItem(STORAGE_KEYS.TEMPORADA, this.temporada.toString());
-      localStorage.setItem(STORAGE_KEYS.NUEVA_PESTANA, this.nuevaPestana.toString());
+      localStorage.setItem(
+        STORAGE_KEYS.NUEVA_PESTANA,
+        this.nuevaPestana.toString()
+      );
     } catch (error) {
       console.error('Error saving settings:', error);
     }

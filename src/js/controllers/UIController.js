@@ -59,7 +59,7 @@ export class UIController {
   bindSeasonInput() {
     const temporadaInput = DOMUtils.elements.temporadaInput();
     if (temporadaInput) {
-      temporadaInput.addEventListener('change', (e) => {
+      temporadaInput.addEventListener('change', e => {
         this.appState.updateTemporada(parseInt(e.target.value, 10));
       });
     }
@@ -71,7 +71,7 @@ export class UIController {
   bindNewTabCheckbox() {
     const nuevaPestanaCheckbox = DOMUtils.elements.nuevaPestana();
     if (nuevaPestanaCheckbox) {
-      nuevaPestanaCheckbox.addEventListener('change', (e) => {
+      nuevaPestanaCheckbox.addEventListener('change', e => {
         this.appState.updateNuevaPestana(e.target.checked);
         const episodioLink = DOMUtils.elements.episodioLink();
         if (episodioLink) {
@@ -86,8 +86,8 @@ export class UIController {
    */
   bindSourceSelection() {
     const sourceItems = DOMUtils.elements.sourceItems();
-    sourceItems.forEach((item) => {
-      item.addEventListener('click', (e) => {
+    sourceItems.forEach(item => {
+      item.addEventListener('click', e => {
         e.preventDefault();
         this.appState.updateFuente(e.target.textContent);
       });
@@ -111,7 +111,9 @@ export class UIController {
         this.appState.temporada
       );
 
-      const episodeData = await EpisodeService.fetchEpisodeData(episodeInfo.url);
+      const episodeData = await EpisodeService.fetchEpisodeData(
+        episodeInfo.url
+      );
 
       if (!EpisodeService.isValidEpisodeData(episodeData)) {
         throw new Error('Episode not found');
