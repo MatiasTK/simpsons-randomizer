@@ -90,6 +90,9 @@ export class UIController {
       item.addEventListener('click', e => {
         e.preventDefault();
         this.appState.updateFuente(e.target.textContent);
+
+        // Hide the episode card when source is changed
+        this.hideEpisodeCard();
       });
     });
   }
@@ -152,6 +155,18 @@ export class UIController {
 
     // Set up copy button
     this.setupCopyButton(copiarBtn, url);
+  }
+
+  /**
+   * Hides the episode card
+   */
+  hideEpisodeCard() {
+    const card = DOMUtils.elements.card();
+    const spinner = DOMUtils.elements.spinner();
+
+    // Hide card and spinner
+    DOMUtils.toggleElement(card, false);
+    DOMUtils.toggleElement(spinner, false);
   }
 
   /**
