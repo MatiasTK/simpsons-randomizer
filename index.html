@@ -1,8 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Encuentra capítulos aleatorios de Los Simpsons de diferentes fuentes"
+    />
+    <meta name="keywords" content="simpsons, episodios, aleatorio, capítulos, streaming" />
+    <meta name="author" content="MatiasTK" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Simpsons Randomizer" />
+    <meta property="og:description" content="Mira capítulos aleatorios de Los Simpsons" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Simpsons Randomizer" />
+    <meta name="twitter:description" content="Mira capítulos aleatorios de Los Simpsons" />
+
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -10,8 +29,8 @@
       crossorigin="anonymous"
     />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-    <title>Simpsons Randomizer</title>
-    <meta name="description" content="Mira capítulos aleatorios de Los Simpsons" />
+    <title>Simpsons Randomizer - Encuentra episodios aleatorios</title>
+
     <style>
       .btn-secondary {
         background-color: #343a40;
@@ -21,31 +40,55 @@
         width: 1.25rem !important;
         height: 1.25rem !important;
       }
+      .episode-card {
+        transition: transform 0.2s ease-in-out;
+      }
+      .episode-card:hover {
+        transform: translateY(-2px);
+      }
     </style>
   </head>
+
   <body class="bg-dark text-white d-flex flex-column vh-100">
-    <h1 class="display-4 text-center pt-3">Simpsons Randomizer</h1>
-    <main class="container-fluid d-flex align-items-center justify-content-center h-100">
-      <div id="episodioEncontrado" class="d-flex justify-content-center">
+    <header class="py-3">
+      <h1 class="display-4 text-center mb-0">Simpsons Randomizer</h1>
+      <p class="text-center text-white-50 mt-2 mb-0 fs-6">
+        Encuentra episodios aleatorios de Los Simpsons
+      </p>
+    </header>
+
+    <main class="container-fluid d-flex align-items-center justify-content-center flex-grow-1">
+      <section id="episodioEncontrado" class="d-flex justify-content-center" aria-live="polite">
+        <!-- Loading Spinner -->
         <div
           class="spinner-border visually-hidden"
           role="status"
           style="width: 5rem; height: 5rem"
           id="spinner"
+          aria-label="Cargando episodio..."
         >
-          <span class="visually-hidden">Loading...</span>
+          <span class="visually-hidden">Cargando...</span>
         </div>
-        <div
-          class="card visually-hidden-focusable"
+
+        <!-- Episode Card -->
+        <article
+          class="card visually-hidden-focusable episode-card"
           style="width: 18rem"
           id="card"
           data-bs-theme="dark"
+          aria-labelledby="episode-title"
         >
-          <img class="card-img-top" alt="Imagen capitulo" style="max-height: 250px" />
+          <img
+            class="card-img-top"
+            alt="Imagen del capítulo"
+            style="max-height: 250px"
+            id="episode-image"
+          />
           <div class="card-body">
-            <h5 class="card-title"></h5>
+            <h2 class="card-title h5" id="episode-title"></h2>
             <p
               class="card-text overflow-hidden"
+              id="episode-description"
               style="
                 display: -webkit-box;
                 -webkit-line-clamp: 5;
@@ -60,61 +103,121 @@
                 rel="noopener"
                 target="_blank"
                 id="episodio-link"
-                >Ver episodio</a
+                aria-describedby="episode-title"
               >
-              <button class="btn btn-secondary text-nowrap" id="copiar">Copiar Link</button>
+                Ver episodio
+              </a>
+              <button
+                class="btn btn-secondary text-nowrap"
+                id="copiar"
+                type="button"
+                aria-label="Copiar enlace del episodio"
+              >
+                Copiar Link
+              </button>
             </div>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
     </main>
-    <div class="mb-3">
+
+    <section class="controls-section mb-3">
       <div class="mt-4">
         <div class="d-flex align-items-center gap-2 justify-content-center flex-column">
           <div class="d-flex flex-column gap-2">
-            <div class="d-flex gap-2 align-items-end">
-              <form data-bs-theme="dark">
-                <label class="small ps-1" for="temporadaInput">Hasta temporada:</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="temporadaInput"
-                  default-value="10"
-                  min="1"
-                  max="34"
-                  placeholder="10"
-                  value="10"
-                />
-              </form>
-              <div class="dropdown">
-                <button
-                  class="btn btn-secondary bg-secondary-emphasis dropdown-toggle"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Fuentes
-                </button>
-                <ul class="dropdown-menu" data-bs-theme="dark">
-                  <li><a class="dropdown-item source">simpsonslatino.online</a></li>
-                  <li><a class="dropdown-item source">simpsonizados.me</a></li>
-                  <li><a class="dropdown-item source">simpsonhd.com</a></li>
-                  <li><a class="dropdown-item source">pelisplus.to</a></li>
-                </ul>
-              </div>
-            </div>
-            <button type="button" class="btn btn-primary fw-semibold" id="encontrar">
+            <form
+              class="d-flex gap-2 align-items-end"
+              role="search"
+              aria-label="Configuración de búsqueda"
+              data-bs-theme="dark"
+            >
+              <fieldset class="border-0 p-0 m-0">
+                <legend class="visually-hidden">Configuración de temporadas</legend>
+                <div class="form-group">
+                  <label class="small ps-1" for="temporadaInput">Hasta temporada:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="temporadaInput"
+                    name="temporada"
+                    min="1"
+                    max="34"
+                    placeholder="10"
+                    value="10"
+                    aria-describedby="temporada-help"
+                  />
+                  <div id="temporada-help" class="form-text visually-hidden">
+                    Selecciona hasta qué temporada quieres buscar episodios (1-34)
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="border-0 p-0 m-0">
+                <legend class="visually-hidden">Selección de fuente</legend>
+                <div class="dropdown">
+                  <button
+                    class="btn btn-secondary bg-secondary-emphasis dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    aria-label="Seleccionar fuente de episodios"
+                  >
+                    Fuentes
+                  </button>
+                  <ul class="dropdown-menu" data-bs-theme="dark" role="menu">
+                    <li role="none">
+                      <a class="dropdown-item source" href="#" role="menuitem" tabindex="0"
+                        >simpsonslatino.online</a
+                      >
+                    </li>
+                    <li role="none">
+                      <a class="dropdown-item source" href="#" role="menuitem" tabindex="0"
+                        >simpsonizados.me</a
+                      >
+                    </li>
+                    <li role="none">
+                      <a class="dropdown-item source" href="#" role="menuitem" tabindex="0"
+                        >simpsonhd.com</a
+                      >
+                    </li>
+                    <li role="none">
+                      <a class="dropdown-item source" href="#" role="menuitem" tabindex="0"
+                        >pelisplus.to</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </fieldset>
+            </form>
+
+            <button
+              type="button"
+              class="btn btn-primary fw-semibold"
+              id="encontrar"
+              aria-label="Buscar episodio aleatorio"
+            >
               Encuentra un episodio
             </button>
-            <div class="d-flex align-items-center gap-2 mx-auto form-check">
-              <input class="form-check-input my-auto" type="checkbox" id="nueva-pestana" />
-              <label class="form-check-label" for="nueva-pestana">Abrir en nueva pestaña</label>
-            </div>
+
+            <fieldset class="border-0 p-0 m-0">
+              <legend class="visually-hidden">Opciones de visualización</legend>
+              <div class="d-flex align-items-center gap-2 mx-auto form-check">
+                <input
+                  class="form-check-input my-auto"
+                  type="checkbox"
+                  id="nueva-pestana"
+                  name="nueva-pestana"
+                />
+                <label class="form-check-label" for="nueva-pestana"> Abrir en nueva pestaña </label>
+              </div>
+            </fieldset>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
     <footer class="text-center position-relative" style="margin-bottom: 8rem">
+      <!-- Toast Notification -->
       <div
         class="toast align-items-center text-bg-success border-0 ms-auto me-auto position-absolute start-50 translate-middle-x"
         style="top: 0%"
@@ -122,7 +225,6 @@
         role="alert"
         aria-live="assertive"
         aria-atomic="true"
-        style="bottom: 3rem"
         data-bs-delay="2500"
       >
         <div class="d-flex">
@@ -131,20 +233,30 @@
             type="button"
             class="btn-close btn-close-white me-2 m-auto"
             data-bs-dismiss="toast"
-            aria-label="Close"
+            aria-label="Cerrar notificación"
           ></button>
         </div>
       </div>
-      <span class="mb-2 ms-2 text-center"
-        >Hecho con <span class="text-danger">♥️</span> por
-        <a href="https://github.com/MatiasTK" class="text-decoration-none text-danger">MatiasTK</a>
-      </span>
+
+      <p class="mb-2 ms-2 text-center">
+        Hecho con <span class="text-danger" aria-label="amor">♥️</span> por
+        <a
+          href="https://github.com/MatiasTK"
+          class="text-decoration-none text-danger"
+          target="_blank"
+          rel="noopener"
+          aria-label="Visitar perfil de GitHub de MatiasTK"
+        >
+          MatiasTK
+        </a>
+      </p>
     </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="src/js/main.js"></script>
   </body>
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"
-  ></script>
-  <script src="script.js"></script>
 </html>

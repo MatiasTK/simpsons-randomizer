@@ -1,0 +1,36 @@
+{
+  "name": "simpsons-randomizer",
+  "version": "1.0.0",
+  "description": "A web application to find random episodes of The Simpsons from various streaming sources",
+  "main": "src/js/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "npx http-server . -p 8080 -c-1",
+    "dev": "npx http-server . -p 8080 -c-1 --cors",
+    "build": "echo 'No build step required for this project'",
+    "lint": "npx eslint src/js/**/*.js",
+    "format": "npx prettier --write src/js/**/*.js"
+  },
+  "keywords": [
+    "simpsons",
+    "episodes",
+    "random",
+    "streaming",
+    "web-app"
+  ],
+  "author": "MatiasTK",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "http-server": "^14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MatiasTK/Simpsons-Randomizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MatiasTK/Simpsons-Randomizer/issues"
+  },
+  "homepage": "https://github.com/MatiasTK/Simpsons-Randomizer#readme"
+}
