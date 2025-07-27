@@ -7,6 +7,7 @@ import { ClipboardUtils, DOMUtils, UIUtils } from '../utils/index.js';
 export class UIController {
   constructor(appState) {
     this.appState = appState;
+    this.hasEpisode = false;
     this.initializeUI();
     this.bindEvents();
   }
@@ -31,6 +32,8 @@ export class UIController {
     if (episodioLink) {
       episodioLink.target = nuevaPestana ? '_blank' : '_self';
     }
+
+    this.updateCopyButtonState(false);
   }
 
   /**
@@ -153,8 +156,11 @@ export class UIController {
     if (cardText) cardText.textContent = episodeData.description;
     if (episodioLink) episodioLink.href = url;
 
-    // Set up copy button
+    // Enable copy button and set up functionality
+    this.updateCopyButtonState(true);
     this.setupCopyButton(copiarBtn, url);
+
+    this.hasEpisode = true;
   }
 
   /**
@@ -167,6 +173,30 @@ export class UIController {
     // Hide card and spinner
     DOMUtils.toggleElement(card, false);
     DOMUtils.toggleElement(spinner, false);
+
+    this.updateCopyButtonState(false);
+    this.hasEpisode = false;
+  }
+
+  /**
+   * Updates the copy button state
+   * @param {boolean} enabled - Whether the button should be enabled
+   */
+  updateCopyButtonState(enabled) {
+    const copiarBtn = DOMUtils.elements.copiar();
+    if (!copiarBtn) return;
+
+    if (enabled) {
+      copiarBtn.disabled = false;
+      copiarBtn.classList.remove('btn-secondary', 'disabled');
+      copiarBtn.classList.add('btn-secondary');
+      copiarBtn.setAttribute('aria-label', 'Copiar enlace del episodio');
+    } else {
+      copiarBtn.disabled = true;
+      copiarBtn.classList.remove('btn-secondary');
+      copiarBtn.classList.add('btn-secondary', 'disabled');
+      copiarBtn.setAttribute('aria-label', 'No hay episodio para copiar');
+    }
   }
 
   /**
@@ -175,13 +205,15 @@ export class UIController {
    * @param {string} url - URL to copy
    */
   setupCopyButton(copiarBtn, url) {
-    if (!copiarBtn) return;
+    if (!copiarBtn || !this.hasEpisode) return;
 
     // Remove existing listeners to prevent duplicates
     const newCopiarBtn = copiarBtn.cloneNode(true);
     copiarBtn.parentNode.replaceChild(newCopiarBtn, copiarBtn);
 
     newCopiarBtn.addEventListener('click', async () => {
+      if (!this.hasEpisode) return;
+
       const success = await ClipboardUtils.copyToClipboard(url);
       if (success) {
         UIUtils.showToast('Enlace copiado al portapapeles');
