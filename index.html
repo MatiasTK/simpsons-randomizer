@@ -121,17 +121,27 @@
                 </span>
               </div>
               <h2 class="card-title h5 text-truncate" id="episode-title"></h2>
-              <p
-                class="card-text overflow-hidden small text-muted"
-                id="episode-description"
-                style="
-                  display: -webkit-box;
-                  -webkit-line-clamp: 3;
-                  line-clamp: 3;
-                  -webkit-box-orient: vertical;
-                  text-overflow: ellipsis;
-                "
-              ></p>
+              <div class="episode-description-container mb-4">
+                <p
+                  class="card-text overflow-hidden small text-muted mb-0"
+                  id="episode-description"
+                  style="
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    text-overflow: ellipsis;
+                  "
+                ></p>
+                <button
+                  class="btn btn-link btn-sm text-primary p-0 mt-1 visually-hidden text-decoration-none"
+                  id="show-more-btn"
+                  type="button"
+                  aria-label="Mostrar más texto de la descripción"
+                >
+                  Mostrar más
+                </button>
+              </div>
               <div class="d-flex align-items-center gap-2">
                 <a
                   class="btn btn-primary w-100 fw-semibold"

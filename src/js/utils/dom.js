@@ -71,5 +71,6 @@ export class DOMUtils {
     cardText: () => DOMUtils.querySelector('.card-text'),
     cardSeason: () => DOMUtils.querySelector('#episode-season'),
     cardNumber: () => DOMUtils.querySelector('#episode-number'),
+    showMoreBtn: () => DOMUtils.getElementById('show-more-btn'),
   };
 }

@@ -44,6 +44,7 @@ export class UIController {
     this.bindSeasonInput();
     this.bindNewTabCheckbox();
     this.bindSourceSelection();
+    this.bindShowMoreButton();
   }
 
   /**
@@ -98,6 +99,16 @@ export class UIController {
         this.hideEpisodeCard();
       });
     });
+  }
+
+  /**
+   * Binds the show more button
+   */
+  bindShowMoreButton() {
+    const showMoreBtn = DOMUtils.elements.showMoreBtn();
+    if (showMoreBtn) {
+      showMoreBtn.addEventListener('click', () => this.toggleDescription());
+    }
   }
 
   /**
@@ -165,6 +176,7 @@ export class UIController {
     const copiarBtn = DOMUtils.elements.copiar();
     const cardSeason = DOMUtils.elements.cardSeason();
     const cardNumber = DOMUtils.elements.cardNumber();
+    const showMoreBtn = DOMUtils.elements.showMoreBtn();
 
     // Show card
     DOMUtils.toggleElement(card, true);
@@ -176,6 +188,33 @@ export class UIController {
     if (episodioLink) episodioLink.href = url;
     if (cardSeason) cardSeason.textContent = episodeData.season;
     if (cardNumber) cardNumber.textContent = episodeData.number;
+
+    // Reset description to truncated state
+    if (cardText) {
+      cardText.style.display = '-webkit-box';
+      cardText.style.webkitLineClamp = '3';
+      cardText.style.lineClamp = '3';
+      cardText.style.webkitBoxOrient = 'vertical';
+      cardText.style.textOverflow = 'ellipsis';
+    }
+
+    // Show/hide "Mostrar más" button based on text overflow
+    if (showMoreBtn && cardText) {
+      // Check if text is truncated (scrollHeight > clientHeight)
+      setTimeout(() => {
+        const isTruncated = cardText.scrollHeight > cardText.clientHeight;
+        if (isTruncated) {
+          showMoreBtn.classList.remove('visually-hidden');
+          showMoreBtn.textContent = 'Mostrar más';
+          showMoreBtn.setAttribute(
+            'aria-label',
+            'Mostrar más texto de la descripción'
+          );
+        } else {
+          showMoreBtn.classList.add('visually-hidden');
+        }
+      }, 0);
+    }
 
     // Enable copy button and set up functionality
     this.updateCopyButtonState(true);
@@ -242,5 +281,43 @@ export class UIController {
         UIUtils.showToast('Error al copiar el enlace');
       }
     });
+  }
+
+  /**
+   * Toggles the description between truncated and full view
+   */
+  toggleDescription() {
+    const cardText = DOMUtils.elements.cardText();
+    const showMoreBtn = DOMUtils.elements.showMoreBtn();
+
+    if (!cardText || !showMoreBtn) return;
+
+    const isExpanded = cardText.style.display === 'block';
+
+    if (isExpanded) {
+      // Collapse the text
+      cardText.style.display = '-webkit-box';
+      cardText.style.webkitLineClamp = '3';
+      cardText.style.lineClamp = '3';
+      cardText.style.webkitBoxOrient = 'vertical';
+      cardText.style.textOverflow = 'ellipsis';
+      showMoreBtn.textContent = 'Mostrar más';
+      showMoreBtn.setAttribute(
+        'aria-label',
+        'Mostrar más texto de la descripción'
+      );
+    } else {
+      // Expand the text
+      cardText.style.display = 'block';
+      cardText.style.webkitLineClamp = 'unset';
+      cardText.style.lineClamp = 'unset';
+      cardText.style.webkitBoxOrient = 'unset';
+      cardText.style.textOverflow = 'unset';
+      showMoreBtn.textContent = 'Mostrar menos';
+      showMoreBtn.setAttribute(
+        'aria-label',
+        'Mostrar menos texto de la descripción'
+      );
+    }
   }
 }
