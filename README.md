@@ -11,7 +11,7 @@ Puedes usar la web [aquí](https://simpsonsrandomizer.netlify.app)
 
 ## Previsualización
 
-![Previsualización](https://i.imgur.com/wdTarOB.png)
+![Previsualización](https://i.imgur.com/BwT7URH.png)
 
 ## Desarrollo
 
