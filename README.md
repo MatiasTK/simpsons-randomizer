@@ -20,3 +20,15 @@ Para ejecutar el proyecto en modo desarrollo:
 ```shell
 netlify dev
 ```
+
+### Scripts
+
+Para obtener la lista de episodios:
+
+```shell
+node --env-file .env scripts/generateEpisodes.js
+```
+
+> [!NOTE]
+> * El script necesita una variable de entorno llamada `TMDB_API_TOKEN` que se debe obtener de [TMDB](https://www.themoviedb.org/settings/api)
+> * Se necesita tener node `>20` para usar la flag `--env-file`

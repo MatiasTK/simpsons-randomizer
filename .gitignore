@@ -9,3 +9,9 @@ build
 
 # Dist folder
 dist
+
+# env
+.env
+
+# Deno
+.deno.lock

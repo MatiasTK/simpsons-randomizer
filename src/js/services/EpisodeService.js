@@ -1,4 +1,5 @@
-import { PROVIDERS, PROXY_ENDPOINT, SEASONS } from '../constants/index.js';
+import { PROVIDERS, PROXY_ENDPOINT } from '../constants/index.js';
+import { fetchEpisodesData } from '../constants/seasons.js';
 import { UIUtils } from '../utils/index.js';
 
 /**
@@ -25,6 +26,23 @@ export class EpisodeService {
       console.error('Error fetching episode data:', error);
       return null;
     }
+  }
+
+  /**
+   * Fetches episode data from TMDB
+   * @param {number} episode - Episode number
+   * @param {number} season - Season number
+   * @returns {Promise<Object|null>} Episode data or null if not found
+   */
+  static async fetchEpisodeDataFromTMDB(episode, season) {
+    const episodesData = await fetchEpisodesData();
+    const episodeData = episodesData[season - 1].episodes[episode - 1];
+
+    if (!episodeData) {
+      return null;
+    }
+
+    return episodeData;
   }
 
   /**
@@ -72,11 +90,23 @@ export class EpisodeService {
    * Generates a random episode URL
    * @param {string} fuente - Provider source
    * @param {number} maxSeason - Maximum season to include
-   * @returns {Object} Episode information
+   * @returns {Promise<Object>} Episode information
    */
-  static generateRandomEpisode(fuente, maxSeason) {
-    const season = UIUtils.getRandomNumber(1, maxSeason);
-    const episode = UIUtils.getRandomNumber(1, SEASONS[season]);
+  static async generateRandomEpisode(fuente, maxSeason) {
+    const episodesData = await fetchEpisodesData();
+    const seasons = episodesData.map(episode => episode.season);
+    const availableSeasons = seasons.filter(season => season <= maxSeason);
+
+    if (availableSeasons.length === 0) {
+      throw new Error('No seasons available for the specified range');
+    }
+
+    const season =
+      availableSeasons[Math.floor(Math.random() * availableSeasons.length)];
+    const episode = UIUtils.getRandomNumber(
+      1,
+      episodesData[season - 1].quantity
+    );
     const url = PROVIDERS[fuente](season, episode);
 
     return {

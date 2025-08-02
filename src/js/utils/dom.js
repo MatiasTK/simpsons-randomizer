@@ -69,5 +69,7 @@ export class DOMUtils {
     cardImage: () => DOMUtils.querySelector('.card-img-top'),
     cardTitle: () => DOMUtils.querySelector('.card-title'),
     cardText: () => DOMUtils.querySelector('.card-text'),
+    cardSeason: () => DOMUtils.querySelector('#episode-season'),
+    cardNumber: () => DOMUtils.querySelector('#episode-number'),
   };
 }

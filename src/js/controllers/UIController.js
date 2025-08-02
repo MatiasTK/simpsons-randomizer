@@ -112,10 +112,27 @@ export class UIController {
     DOMUtils.toggleElement(card, false);
 
     try {
-      const episodeInfo = EpisodeService.generateRandomEpisode(
+      const episodeInfo = await EpisodeService.generateRandomEpisode(
         this.appState.fuente,
         this.appState.temporada
       );
+
+      const episodeDataFromTMDB = await EpisodeService.fetchEpisodeDataFromTMDB(
+        episodeInfo.episode,
+        episodeInfo.season
+      );
+
+      if (episodeDataFromTMDB) {
+        return this.displayEpisode(
+          {
+            ...episodeDataFromTMDB,
+            season: episodeInfo.season,
+            number: episodeInfo.episode,
+          },
+          episodeInfo.url,
+          episodeDataFromTMDB.image
+        );
+      }
 
       const episodeData = await EpisodeService.fetchEpisodeData(
         episodeInfo.url
@@ -139,22 +156,26 @@ export class UIController {
    * @param {Object} episodeData - Episode data
    * @param {string} url - Episode URL
    */
-  displayEpisode(episodeData, url) {
+  displayEpisode(episodeData, url, imageUrl = null) {
     const card = DOMUtils.elements.card();
     const cardImage = DOMUtils.elements.cardImage();
     const cardTitle = DOMUtils.elements.cardTitle();
     const cardText = DOMUtils.elements.cardText();
     const episodioLink = DOMUtils.elements.episodioLink();
     const copiarBtn = DOMUtils.elements.copiar();
+    const cardSeason = DOMUtils.elements.cardSeason();
+    const cardNumber = DOMUtils.elements.cardNumber();
 
     // Show card
     DOMUtils.toggleElement(card, true);
 
     // Update content
-    if (cardImage) cardImage.src = episodeData.image;
+    if (cardImage) cardImage.src = imageUrl || episodeData.image;
     if (cardTitle) cardTitle.textContent = episodeData.title;
     if (cardText) cardText.textContent = episodeData.description;
     if (episodioLink) episodioLink.href = url;
+    if (cardSeason) cardSeason.textContent = episodeData.season;
+    if (cardNumber) cardNumber.textContent = episodeData.number;
 
     // Enable copy button and set up functionality
     this.updateCopyButtonState(true);

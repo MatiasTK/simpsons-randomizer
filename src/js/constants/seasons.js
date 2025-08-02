@@ -1,43 +1,36 @@
+// Cache for episodes data
+let episodesCache = null;
+
 /**
- * Seasons configuration for The Simpsons
- * Each key represents a season number and the value is the number of episodes
+ * Fetches episodes data from the JSON file
+ * @returns {Promise<Array>} Episodes data
  */
-export const SEASONS = {
-  1: 13,
-  2: 22,
-  3: 24,
-  4: 22,
-  5: 22,
-  6: 25,
-  7: 25,
-  8: 25,
-  9: 25,
-  10: 23,
-  11: 22,
-  12: 21,
-  13: 22,
-  14: 22,
-  15: 22,
-  16: 21,
-  17: 22,
-  18: 22,
-  19: 20,
-  20: 21,
-  21: 23,
-  22: 22,
-  23: 22,
-  24: 22,
-  25: 22,
-  26: 22,
-  27: 22,
-  28: 21,
-  29: 21,
-  30: 23,
-  31: 22,
-  32: 22,
-  33: 22,
-  34: 22,
-};
+export async function fetchEpisodesData() {
+  if (episodesCache) {
+    return episodesCache;
+  }
+
+  try {
+    const response = await fetch('/src/js/data/episodes.json');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    episodesCache = await response.json();
+    SEASON_LIMITS.MAX = episodesCache.length;
+    return episodesCache;
+  } catch (error) {
+    console.error('Error loading episodes data:', error);
+    throw error;
+  }
+}
+
+/**
+ * Gets the episodes data
+ * @returns {Promise<Array>} Episodes data
+ */
+export async function getEpisodesData() {
+  return await fetchEpisodesData();
+}
 
 /**
  * Minimum and maximum season numbers
