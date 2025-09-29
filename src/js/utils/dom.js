@@ -62,6 +62,7 @@ export class DOMUtils {
     temporadaInput: () => DOMUtils.getElementById('temporadaInput'),
     nuevaPestana: () => DOMUtils.getElementById('nueva-pestana'),
     episodioLink: () => DOMUtils.getElementById('episodio-link'),
+    stremioLink: () => DOMUtils.getElementById('stremio-link'),
     copiar: () => DOMUtils.getElementById('copiar'),
     fuenteToast: () => DOMUtils.getElementById('fuenteToast'),
     encontrar: () => DOMUtils.getElementById('encontrar'),

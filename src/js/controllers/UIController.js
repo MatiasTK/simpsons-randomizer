@@ -132,6 +132,7 @@ export class UIController {
         episodeInfo.episode,
         episodeInfo.season
       );
+      const episodeStremioLink = `stremio:///detail/series/tt0096697/tt0096697:${episodeInfo.season}:${episodeInfo.episode}`;
 
       if (episodeDataFromTMDB) {
         return this.displayEpisode(
@@ -141,6 +142,7 @@ export class UIController {
             number: episodeInfo.episode,
           },
           episodeInfo.url,
+          episodeStremioLink,
           episodeDataFromTMDB.image
         );
       }
@@ -153,7 +155,7 @@ export class UIController {
         throw new Error('Episode not found');
       }
 
-      this.displayEpisode(episodeData, episodeInfo.url);
+      this.displayEpisode(episodeData, episodeInfo.url, episodeStremioLink);
     } catch (error) {
       console.error('Error finding episode:', error);
       UIUtils.showToast('No se encontró el episodio, intenta de nuevo');
@@ -166,13 +168,16 @@ export class UIController {
    * Displays episode information in the UI
    * @param {Object} episodeData - Episode data
    * @param {string} url - Episode URL
+   * @param {string} stremioLink - Deep link to open episode in Stremio
+   * @param {string|null} [imageUrl=null] - Optional image URL to override default
    */
-  displayEpisode(episodeData, url, imageUrl = null) {
+  displayEpisode(episodeData, url, stremioLink, imageUrl = null) {
     const card = DOMUtils.elements.card();
     const cardImage = DOMUtils.elements.cardImage();
     const cardTitle = DOMUtils.elements.cardTitle();
     const cardText = DOMUtils.elements.cardText();
     const episodioLink = DOMUtils.elements.episodioLink();
+    const stremioLinkElement = DOMUtils.elements.stremioLink();
     const copiarBtn = DOMUtils.elements.copiar();
     const cardSeason = DOMUtils.elements.cardSeason();
     const cardNumber = DOMUtils.elements.cardNumber();
@@ -186,6 +191,7 @@ export class UIController {
     if (cardTitle) cardTitle.textContent = episodeData.title;
     if (cardText) cardText.textContent = episodeData.description;
     if (episodioLink) episodioLink.href = url;
+    if (stremioLinkElement) stremioLinkElement.href = stremioLink;
     if (cardSeason) cardSeason.textContent = episodeData.season;
     if (cardNumber) cardNumber.textContent = episodeData.number;
 

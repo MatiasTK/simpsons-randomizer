@@ -24,6 +24,7 @@ export const DOM_SELECTORS = {
   temporadaInput: '#temporadaInput',
   nuevaPestana: '#nueva-pestana',
   episodioLink: '#episodio-link',
+  stremioLink: '#stremio-link',
   copiar: '#copiar',
   fuenteToast: '#fuenteToast',
   encontrar: '#encontrar',
